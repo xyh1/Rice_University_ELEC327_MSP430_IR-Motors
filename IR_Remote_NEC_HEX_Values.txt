@@ -1,0 +1,26 @@
+// Link to remote: http://www.adafruit.com/products/389
+// Uses NEC IR protocol
+// Button presses mapped to HEX value
+
+VOL_DOWN   FF00DF00
+PLAY       F708DF00
+VOL_UP     FB04DF00
+SETUP      FD02DF00
+UP         F50ADF00
+STOP       F90GDF00
+LEFT       FE01DF00
+ENTER      F609DF00
+RIGHT      FA05DF00
+PLUS       FC03DF00
+DOWN       F40BDF00
+BACK       F807DF00
+
+ONE        7F80DF00
+TWO        7788DF00
+THREE      7B84DF00
+FOUR       7D82DF00
+FIVE       758ADF00
+SIX        7986DF00
+SEVEN      7E81DF00
+EIGHT      7689DF00
+NINE       7A85DF00
