@@ -27,7 +27,7 @@
 
 //---------------------------------------------------
 // IR Remote NEC Hex Values
-// http://www.adafruit.com/products/389
+// Remote: http://www.adafruit.com/products/389
 //---------------------------------------------------
 #define VOL_DOWN   FF00DF00
 #define PLAY       F708DF00
@@ -159,6 +159,8 @@ void main(void)
       //display_BRD(DataBitsReversed);
 
       DataReceived = FALSE;
+
+      _BIS_SR(LPM0_bits + GIE);
     }   // end data received
   }     // end while loop
 }       // end main
@@ -189,4 +191,5 @@ __interrupt void timeout_IRQ(void)
   P1OUT &= ~LED1;
   Count = 0;
   DataReceived = TRUE;
+  _BIC_SR(LPM0_EXIT);
 }
