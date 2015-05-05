@@ -67,7 +67,7 @@ unsigned long DataBits, DataBitsReversed;
 unsigned short time[128];
 
 char ir_display[8];
-char hex_values[16] = "0123456789ABCDEF";
+const char hex_values[16] = "0123456789ABCDEF";
 
 //---------------------------------------------------
 // IR Signal Conversion Routines
@@ -159,6 +159,11 @@ void main(void)
       //display_BRD(DataBitsReversed);
 
       DataReceived = FALSE;
+
+      // Case statement here using HEX IR codes
+      // Switch ir_display
+      // Case
+      // etc
 
       _BIS_SR(LPM0_bits + GIE);
     }   // end data received
