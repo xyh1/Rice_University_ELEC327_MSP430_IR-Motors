@@ -29,28 +29,28 @@
 // IR Remote NEC Hex Values
 // Remote: http://www.adafruit.com/products/389
 //---------------------------------------------------
-#define VOL_DOWN   FF00DF00
-#define PLAY       F708DF00
-#define VOL_UP     FB04DF00
-#define SETUP      FD02DF00
-#define UP         F50ADF00
-#define STOP       F90GDF00
-#define LEFT       FE01DF00
-#define ENTER      F609DF00
-#define RIGHT      FA05DF00
-#define PLUS       FC03DF00
-#define DOWN       F40BDF00
-#define BACK       F807DF00
+#define VOL_DOWN   'FF00DF00'
+#define PLAY       'F708DF00'
+#define VOL_UP     'FB04DF00'
+#define SETUP      'FD02DF00'
+#define UP         'F50ADF00'
+#define STOP       'F90GDF00'
+#define LEFT       'FE01DF00'
+#define ENTER      'F609DF00'
+#define RIGHT      'FA05DF00'
+#define PLUS       'FC03DF00'
+#define DOWN       'F40BDF00'
+#define BACK       'F807DF00'
 
-#define ONE        7F80DF00
-#define TWO        7788DF00
-#define THREE      7B84DF00
-#define FOUR       7D82DF00
-#define FIVE       758ADF00
-#define SIX        7986DF00
-#define SEVEN      7E81DF00
-#define EIGHT      7689DF00
-#define NINE       7A85DF00
+#define ONE        '7F80DF00'
+#define TWO        '7788DF00'
+#define THREE      '7B84DF00'
+#define FOUR       '7D82DF00'
+#define FIVE       '758ADF00'
+#define SIX        '7986DF00'
+#define SEVEN      '7E81DF00'
+#define EIGHT      '7689DF00'
+#define NINE       '7A85DF00'
 
 //---------------------------------------------------
 // Preallocate Function Memory
@@ -115,11 +115,14 @@ void init(void)
   // BCSCTL1 = CALBC1_8MHZ;
   // DCOCTL  = CALDCO_8MHZ;
 
-  P1DIR |= LED1;
+  P1DIR |= LED1 + BIT6;
   P1OUT &= ~LED1;
-
   P1SEL2 &= BIT1;   // TIM0 input capture function
   P1SEL  |= BIT1;   // TIM0 input capture function
+
+  P2DIR = BIT5 + BIT4;
+//  P2OUT = BIT5;
+//  P2REN = BIT4;
 
   // Initialize Timer0_A
   TA0CTL = TASSEL_2 + ID_3 + MC_0;
@@ -164,6 +167,32 @@ void main(void)
       // Switch ir_display
       // Case
       // etc
+      switch(ir_display[1]){
+      // Go backwards
+      case '4':
+    	  P2OUT = BIT5 + BIT2;
+    	  P2REN = BIT4 + BIT1;
+
+    	  break;
+      // Go forwards
+      case '5':
+    	  P2OUT = BIT4 + BIT1;
+    	  P2REN = BIT5 + BIT2;
+    	  break;
+      case 'E':
+      // Turn left
+    	  P2OUT = BIT2 + BIT4;
+    	  P2REN = BIT1 + BIT5;
+    	  break;
+      case 'A':
+      // Turn right
+    	  P2OUT = BIT1 + BIT5;
+    	  P2REN = BIT2 + BIT4;
+    	  break;
+      case '6':
+    	  P2OUT = 0;
+    	  P2REN = 0;
+      }
 
       _BIS_SR(LPM0_bits + GIE);
     }   // end data received
@@ -178,7 +207,7 @@ void main(void)
 __interrupt void capture_IRQ(void)
 // interrupts from CCR0
 {
-  P1OUT |= LED1;
+//  P1OUT |= LED1;
   TA0CTL = TASSEL_2 + ID_3 + TACLR + MC_2;  // start timer in continuous mode
   time[Count]  = TA0CCR0;                   // read capture time
   Count = ++Count % 128;
@@ -193,7 +222,7 @@ __interrupt void timeout_IRQ(void)
 {
   WhichIRQ = TA0IV;  // must read to clear flags
   TA0CTL = TACLR;    // stop and clear timer
-  P1OUT &= ~LED1;
+//  P1OUT &= ~LED1;
   Count = 0;
   DataReceived = TRUE;
   _BIC_SR(LPM0_EXIT);
